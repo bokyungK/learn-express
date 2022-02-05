@@ -1,9 +1,20 @@
 const express = require('express');
 const app = express();
 const port = 3000;
+const fs = require('fs');
+const template = require('./lib/template.js');
 
-app.get('/', (req, res) => {
-  res.send('Hello World!');
+app.get('/', (request, response) => {
+  fs.readdir('./data', function(error, filelist){
+  const title = 'Welcome';
+  const description = 'Hello, Node.js';
+  const list = template.list(filelist);
+  const html = template.HTML(title, list,
+    `<h2>${title}</h2>${description}`,
+    `<a href="/create">create</a>`
+  );
+  response.send(html);
+  });
 })
 
 app.get('/page', (req, res) => {
@@ -15,10 +26,8 @@ app.listen(port, () => {
 })
 
 // const http = require('http');
-// const fs = require('fs');
 // const url = require('url');
 // const qs = require('querystring');
-// const template = require('./lib/template.js');
 // const path = require('path');
 // const sanitizeHtml = require('sanitize-html');
 
