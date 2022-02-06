@@ -75,7 +75,7 @@ app.post('/create_process', (request, response) => {
       const title = post.title;
       const description = post.description;
       fs.writeFile(`data/${title}`, description, 'utf8', err => {
-        response.writeHead(302, {Location: `/${title}`});
+        response.writeHead(302, {Location: `/page/${title}`});
         response.end()
         // response.redirect(302, `/page/${title}`); express의 redirect 메소드로도 response 코드 구현 가능
       })
