@@ -17,8 +17,8 @@ app.get('/', (request, response) => {
   });
 })
 
-app.get('/page', (req, res) => {
-  res.send('Hello Page!');
+app.get('/page/:pageId', (request, response) => {
+  response.send(request.params);
 })
 
 app.listen(port, () => {
