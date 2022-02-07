@@ -5,7 +5,9 @@ const fs = require('fs');
 const template = require('./lib/template.js');
 const path = require('path');
 const sanitizeHtml = require('sanitize-html');
-const qs = require('querystring');
+const bodyParser = require('body-parser')
+
+app.use(bodyParser.urlencoded({ extended: false }));
 
 app.get('/', (request, response) => {
   fs.readdir('./data', (error, filelist) => {
@@ -66,17 +68,11 @@ app.get('/create', (request, response) => {
 })
 
 app.post('/create_process', (request, response) => {
-  let body = '';
-  request.on('data', (data) => {
-      body = body + data;
-  })
-  request.on('end', () => {
-      const post = qs.parse(body);
-      const title = post.title;
-      const description = post.description;
-      fs.writeFile(`data/${title}`, description, 'utf8', err => {
-        response.redirect(302, `/page/${title}`);
-      })
+  const post = request.body;
+  const title = post.title;
+  const description = post.description;
+  fs.writeFile(`data/${title}`, description, 'utf8', err => {
+    response.redirect(302, `/page/${title}`);
   })
 })
 
@@ -107,36 +103,24 @@ app.get('/update/:pageId', (request, response) => {
 })
 
 app.post('/update_process', (request, response) => {
-  let body = '';
-  request.on('data', function(data){
-      body = body + data;
-  });
-  request.on('end', function(){
-      const post = qs.parse(body);
-      const id = post.id;
-      const title = post.title;
-      const description = post.description;
-      fs.rename(`data/${id}`, `data/${title}`, function(error){
-        fs.writeFile(`data/${title}`, description, 'utf8', function(err){
-          response.redirect(302, `/update/${title}`);
-        })
-      });
-  });
+  const post = request.body;
+  const id = post.id;
+  const title = post.title;
+  const description = post.description;
+  fs.rename(`data/${id}`, `data/${title}`, function(error){
+    fs.writeFile(`data/${title}`, description, 'utf8', function(err){
+      response.redirect(302, `/update/${title}`);
+    })
+  })
 })
 
 app.post('/delete_process', (request, response) => {
-  let body = '';
-  request.on('data', (data) => {
-      body = body + data;
-  });
-  request.on('end', () => {
-      const post = qs.parse(body);
-      const id = post.id;
-      const filteredId = path.parse(id).base;
-      fs.unlink(`data/${filteredId}`, (error) => {
-        response.redirect(302, `/`);
-      })
-  });
+  const post = request.body;
+  const id = post.id;
+  const filteredId = path.parse(id).base;
+  fs.unlink(`data/${filteredId}`, (error) => {
+    response.redirect(302, `/`);
+  })
 })
 
 app.listen(port, () => {
