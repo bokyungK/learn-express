@@ -34,7 +34,7 @@ app.get('/page/:pageId', (request, response) => {
         `<h2>${sanitizedTitle}</h2>${sanitizedDescription}`,
         ` <a href="/create">create</a>
           <a href="/update/${sanitizedTitle}">update</a>
-          <form action="delete_process" method="post">
+          <form action="/delete_process" method="post">
             <input type="hidden" name="id" value="${sanitizedTitle}">
             <input type="submit" value="delete">
           </form>`
@@ -124,6 +124,21 @@ app.post('/update_process', (request, response) => {
   });
 })
 
+app.post('/delete_process', (request, response) => {
+  let body = '';
+  request.on('data', (data) => {
+      body = body + data;
+  });
+  request.on('end', () => {
+      const post = qs.parse(body);
+      const id = post.id;
+      const filteredId = path.parse(id).base;
+      fs.unlink(`data/${filteredId}`, (error) => {
+        response.redirect(302, `/`);
+      })
+  });
+})
+
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`)
 })
@@ -143,19 +158,6 @@ app.listen(port, () => {
 //     } else if(pathname === '/update'){
 //     } else if(pathname === '/update_process'){
 //     } else if(pathname === '/delete_process'){
-//       let body = '';
-//       request.on('data', function(data){
-//           body = body + data;
-//       });
-//       request.on('end', function(){
-//           const post = qs.parse(body);
-//           const id = post.id;
-//           const filteredId = path.parse(id).base;
-//           fs.unlink(`data/${filteredId}`, function(error){
-//             response.writeHead(302, {Location: `/`});
-//             response.end();
-//           })
-//       });
 //     } else {
 //       response.writeHead(404);
 //       response.end('Not found');
