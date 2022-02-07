@@ -75,8 +75,7 @@ app.post('/create_process', (request, response) => {
       const title = post.title;
       const description = post.description;
       fs.writeFile(`data/${title}`, description, 'utf8', err => {
-        response.writeHead(302, {Location: `/page/${title}`});
-        // response.redirect(302, `/page/${title}`); express의 redirect 메소드로도 response 코드 구현 가능
+        response.redirect(302, `/page/${title}`);
       })
   })
 })
@@ -119,8 +118,7 @@ app.post('/update_process', (request, response) => {
       const description = post.description;
       fs.rename(`data/${id}`, `data/${title}`, function(error){
         fs.writeFile(`data/${title}`, description, 'utf8', function(err){
-          response.writeHead(302, {Location: `/update/${title}`});
-          response.end();
+          response.redirect(302, `/update/${title}`);
         })
       });
   });
