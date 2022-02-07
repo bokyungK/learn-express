@@ -6,8 +6,11 @@ const template = require('./lib/template.js');
 const path = require('path');
 const sanitizeHtml = require('sanitize-html');
 const bodyParser = require('body-parser')
+const compression = require('compression');
 
+// 미들웨어
 app.use(bodyParser.urlencoded({ extended: false }));
+app.use(compression());
 
 app.get('/', (request, response) => {
   fs.readdir('./data', (error, filelist) => {
