@@ -9,6 +9,7 @@ const bodyParser = require('body-parser')
 const compression = require('compression');
 
 // 미들웨어
+app.use(express.static('public'));
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(compression());
 app.get('*', (request, response, next) => {
@@ -23,7 +24,9 @@ app.get('/', (request, response) => {
   const description = 'Hello, Node.js';
   const list = template.list(request.list);
   const html = template.HTML(title, list,
-    `<h2>${title}</h2>${description}`,
+    `<h2>${title}</h2>${description}
+    <img src="/images/hello.jpg" style="width: 300px; display: block; margin: 10px;">
+    `,
     `<a href="/create">create</a>`
   )
   response.send(html);
@@ -110,7 +113,7 @@ app.post('/update_process', (request, response) => {
   const description = post.description;
   fs.rename(`data/${id}`, `data/${title}`, function(error){
     fs.writeFile(`data/${title}`, description, 'utf8', function(err){
-      response.redirect(302, `/update/${title}`);
+      response.redirect(302, `/page/${title}`);
     })
   })
 })
