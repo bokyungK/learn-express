@@ -7,6 +7,7 @@ const path = require('path');
 const sanitizeHtml = require('sanitize-html');
 const bodyParser = require('body-parser')
 const compression = require('compression');
+const res = require('express/lib/response');
 
 // 미들웨어
 app.use(express.static('public'));
@@ -127,8 +128,12 @@ app.post('/delete_process', (request, response) => {
   })
 })
 
+app.use((request, response, next) => {
+  response.status(404).send(`Sorry can't find that!`);
+})
+
 app.listen(port, () => {
-  console.log(`Example app listening on port ${port}`)
+  console.log(`Example app listening on port ${port}`);
 })
 
 // const http = require('http');
